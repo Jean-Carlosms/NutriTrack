@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1">Dashboard</h1>
+      <p class="text-secondary mb-0">Acompanhamento local de dieta, medidas e evolucao.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-success" href="{{ url_for('main.measurements') }}">Registrar medida</a>
+      <a class="btn btn-success" href="{{ url_for('main.meals') }}">Registrar refeicao</a>
+    </div>
+  </div>
+
+  {% if not profile %}
+    <div class="alert alert-info">
+      Cadastre seu perfil para habilitar metas caloricas, macros e relatorios.
+      <a href="{{ url_for('main.profile') }}" class="alert-link">Cadastrar agora</a>.
+    </div>
+  {% endif %}
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Peso atual</span>
+        <strong>{{ latest_measurement.weight_kg if latest_measurement else (profile.current_weight_kg if profile else "-") }} kg</strong>
+        {% if latest_measurement %}<small>Ultima medida: {{ latest_measurement.measurement_date }}</small>{% endif %}
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Peso meta</span>
+        <strong>{{ profile.target_weight_kg if profile else "-" }} kg</strong>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Variacao de peso</span>
+        <strong>{{ weight_delta if weight_delta is not none else "-" }} kg</strong>
+        <small>Comparado a medida anterior</small>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Score semanal</span>
+        <strong>{{ weekly_summary.adherence.score if weekly_summary else "-" }}</strong>
+        {% if weekly_summary %}<small>{{ weekly_summary.adherence.classification }}</small>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Calorias hoje</span>
+        <strong>{{ daily_total.calories }} kcal</strong>
+        {% if calorie_plan %}<small>Meta: {{ calorie_plan.target_calories }} kcal</small>{% endif %}
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Proteina hoje</span>
+        <strong>{{ daily_total.protein_g }} g</strong>
+        {% if macro_targets %}<small>Meta: {{ macro_targets.protein_g }} g</small>{% endif %}
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Carboidratos hoje</span>
+        <strong>{{ daily_total.carbs_g }} g</strong>
+        {% if macro_targets %}<small>Meta: {{ macro_targets.carbs_g }} g</small>{% endif %}
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="metric-card">
+        <span>Gorduras hoje</span>
+        <strong>{{ daily_total.fat_g }} g</strong>
+        {% if macro_targets %}<small>Meta: {{ macro_targets.fat_g }} g</small>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if calorie_plan %}
+    <section class="mb-4">
+      <h2 class="h5">Plano estimado</h2>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <tbody>
+            <tr><th>TMB</th><td>{{ calorie_plan.bmr }} kcal</td></tr>
+            <tr><th>GETD</th><td>{{ calorie_plan.tdee }} kcal</td></tr>
+            <tr><th>Meta diaria</th><td>{{ calorie_plan.target_calories }} kcal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if not has_measurements or not has_meal_logs %}
+    <div class="alert alert-secondary">
+      {% if not has_measurements %}Registre medidas para visualizar evolucao de peso e cintura.{% endif %}
+      {% if not has_meal_logs %}Registre refeicoes para preencher os graficos de calorias e macros. Os cards de hoje permanecem zerados ate o primeiro registro.{% endif %}
+    </div>
+  {% endif %}
+
+  <section class="mb-4">
+    <h2 class="h5">Analise de Tendencia</h2>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="metric-card compact">
+          <span>Tendencia atual</span>
+          <strong>{{ trend_analysis.trend.classification }}</strong>
+          <small>{{ trend_analysis.trend.explanation }}</small>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="metric-card compact">
+          <span>Variacao no periodo</span>
+          <strong>{{ trend_analysis.trend.weight_delta if trend_analysis.trend.weight_delta is not none else "-" }} kg</strong>
+          <small>{{ trend_analysis.trend.period_days }} dias analisados</small>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="metric-card compact">
+          <span>Media movel atual</span>
+          <strong>{{ trend_analysis.latest_moving_average if trend_analysis.latest_moving_average is not none else "-" }} kg</strong>
+          <small>Janela simples de ate 7 registros</small>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="metric-card compact">
+          <span>Possivel plato</span>
+          <strong>{{ "Sim" if trend_analysis.plateau.plateau_detected else "Nao" }}</strong>
+          <small>{{ trend_analysis.plateau.explanation }}</small>
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-info mt-3 mb-0">
+      {{ trend_analysis.recommendation }}
+    </div>
+  </section>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="chart-panel">
+        {% if not has_measurements %}<p class="chart-empty">Cadastre pelo menos duas medidas para gerar este grafico.</p>{% endif %}
+        <canvas id="weightChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-panel">
+        {% if not has_measurements %}<p class="chart-empty">Cadastre medidas de cintura para acompanhar a evolucao.</p>{% endif %}
+        <canvas id="waistChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-panel">
+        {% if not has_meal_logs %}<p class="chart-empty">Registre refeicoes para visualizar calorias por dia.</p>{% endif %}
+        <canvas id="calorieChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-panel">
+        {% if not has_meal_logs %}<p class="chart-empty">Registre refeicoes para visualizar macros por dia.</p>{% endif %}
+        <canvas id="macroChart"></canvas>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    window.NUTRITRACK_CHART_DATA = {{ chart_data | safe }};
+  </script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

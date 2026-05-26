@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Medidas | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+    <h1 class="h3 mb-0">Medidas corporais</h1>
+    {% if measurement and measurement.id %}
+      <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.measurements') }}">Nova medida</a>
+    {% endif %}
+  </div>
+  <p class="text-secondary">IMC, relacao cintura/altura e percentual de gordura sao estimativas educacionais, nao diagnostico medico.</p>
+
+  {% if estimates %}
+    <div class="row g-3 mb-4">
+      <div class="col-md-4"><div class="metric-card compact"><span>IMC</span><strong>{{ estimates.bmi }}</strong></div></div>
+      <div class="col-md-4"><div class="metric-card compact"><span>Cintura/altura</span><strong>{{ estimates.waist_height_ratio or "-" }}</strong></div></div>
+      <div class="col-md-4"><div class="metric-card compact"><span>Gordura Marinha EUA</span><strong>{{ estimates.us_navy_bodyfat if estimates.us_navy_bodyfat is defined else "-" }}%</strong></div></div>
+    </div>
+    {% if estimates.us_navy_error %}
+      <div class="alert alert-warning">{{ estimates.us_navy_error }}</div>
+    {% endif %}
+  {% endif %}
+
+  <form method="post" action="{{ url_for('main.edit_measurement', measurement_id=measurement.id) if measurement and measurement.id else url_for('main.measurements') }}" class="row g-3 mb-4 form-panel">
+    <div class="col-md-2">
+      <label class="form-label">Data</label>
+      <input class="form-control" type="date" name="measurement_date" value="{{ measurement.measurement_date if measurement else today }}" required>
+      <div class="form-text">Data da afericao.</div>
+    </div>
+    {% set fields = [
+      ('weight_kg', 'Peso (kg)', true),
+      ('waist_navel_cm', 'Cintura umbigo', false),
+      ('waist_min_cm', 'Cintura fina', false),
+      ('abdomen_cm', 'Abdomen', false),
+      ('chest_cm', 'Peito', false),
+      ('hip_cm', 'Quadril', false),
+      ('right_arm_cm', 'Braco direito', false),
+      ('left_arm_cm', 'Braco esquerdo', false),
+      ('right_thigh_cm', 'Coxa direita', false),
+      ('left_thigh_cm', 'Coxa esquerda', false),
+      ('neck_cm', 'Pescoco', false),
+      ('calf_cm', 'Panturrilha', false)
+    ] %}
+    {% for name, label, required in fields %}
+      <div class="col-md-2">
+        <label class="form-label">{{ label }}</label>
+        <input class="form-control" type="number" step="0.1" min="{% if required %}0.1{% else %}0{% endif %}" name="{{ name }}" value="{{ measurement[name] if measurement and measurement[name] is not none else '' }}" placeholder="cm" {% if required %}required{% endif %}>
+      </div>
+    {% endfor %}
+    <div class="col-12">
+      <button class="btn btn-success">{{ "Atualizar medida" if measurement and measurement.id else "Registrar medidas" }}</button>
+      {% if measurement and measurement.id %}
+        <a class="btn btn-outline-secondary" href="{{ url_for('main.measurements') }}">Cancelar</a>
+      {% endif %}
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-sm align-middle">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Peso</th>
+          <th>Cintura umbigo</th>
+          <th>Cintura fina</th>
+          <th>Abdomen</th>
+          <th>Peito</th>
+          <th>Quadril</th>
+          <th>Pescoco</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in measurements|reverse %}
+          <tr>
+            <td>{{ row.measurement_date }}</td>
+            <td>{{ row.weight_kg }} kg</td>
+            <td>{{ row.waist_navel_cm or "-" }}</td>
+            <td>{{ row.waist_min_cm or "-" }}</td>
+            <td>{{ row.abdomen_cm or "-" }}</td>
+            <td>{{ row.chest_cm or "-" }}</td>
+            <td>{{ row.hip_cm or "-" }}</td>
+            <td>{{ row.neck_cm or "-" }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.edit_measurement', measurement_id=row.id) }}">Editar</a>
+              <form method="post" action="{{ url_for('main.delete_measurement', measurement_id=row.id) }}" class="d-inline" onsubmit="return confirm('Excluir esta medida?');">
+                <button class="btn btn-sm btn-outline-danger">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="9" class="text-center text-secondary">Nenhuma medida registrada.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

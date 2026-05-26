@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Refeicoes | NutriTrack{% endblock %}
+
+{% block content %}
+  <h1 class="h3 mb-3">Registro de refeicoes</h1>
+
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+      <input class="form-control" type="date" name="meal_date" value="{{ selected_date }}">
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-outline-secondary">Filtrar</button>
+    </div>
+    <div class="col-auto">
+      <a class="btn btn-outline-success" href="{{ url_for('main.foods') }}">Gerenciar alimentos</a>
+    </div>
+  </form>
+
+  <form method="post" class="row g-3 mb-4">
+    <div class="col-md-2">
+      <label class="form-label">Data</label>
+      <input class="form-control" type="date" name="meal_date" value="{{ selected_date }}" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Tipo</label>
+      <select class="form-select" name="meal_type">
+        {% for meal_type in meal_types %}
+          <option>{{ meal_type }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Alimento</label>
+      <select class="form-select" name="food_id">
+        {% for food in foods %}
+          <option value="{{ food.id }}">{{ food.name }} ({{ food.portion_grams }} g)</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Quantidade (g)</label>
+      <input class="form-control" type="number" step="0.1" min="0.1" name="quantity_grams" required>
+    </div>
+    <div class="col-md-1 align-self-end">
+      <button class="btn btn-success w-100">+</button>
+    </div>
+  </form>
+
+  <div class="row g-3 mb-3">
+    <div class="col-6 col-md-3"><div class="metric-card compact"><span>Calorias</span><strong>{{ total.calories }}</strong></div></div>
+    <div class="col-6 col-md-3"><div class="metric-card compact"><span>Proteina</span><strong>{{ total.protein_g }} g</strong></div></div>
+    <div class="col-6 col-md-3"><div class="metric-card compact"><span>Carbo</span><strong>{{ total.carbs_g }} g</strong></div></div>
+    <div class="col-6 col-md-3"><div class="metric-card compact"><span>Gordura</span><strong>{{ total.fat_g }} g</strong></div></div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Refeicao</th>
+          <th>Alimento</th>
+          <th>Qtd.</th>
+          <th>kcal</th>
+          <th>Prot.</th>
+          <th>Carbo</th>
+          <th>Gord.</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td>{{ item.meal_type }}</td>
+            <td>{{ item.name }}</td>
+            <td>
+              <form method="post" action="{{ url_for('main.edit_meal_item', item_id=item.id) }}" class="d-flex gap-2 meal-quantity-form">
+                <input class="form-control form-control-sm" type="number" step="0.1" min="0.1" name="quantity_grams" value="{{ item.quantity_grams }}" aria-label="Quantidade consumida">
+                <button class="btn btn-sm btn-outline-primary">Salvar</button>
+              </form>
+            </td>
+            <td>{{ item.calories }}</td>
+            <td>{{ item.protein_g }} g</td>
+            <td>{{ item.carbs_g }} g</td>
+            <td>{{ item.fat_g }} g</td>
+            <td class="text-end">
+              <form method="post" action="{{ url_for('main.delete_meal_item', item_id=item.id) }}" onsubmit="return confirm('Remover este item da refeicao?');">
+                <button class="btn btn-sm btn-outline-danger">Remover</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" class="text-center text-secondary">Nenhuma refeicao registrada nesta data.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

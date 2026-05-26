@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Historico de relatorios | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1">Historico de relatorios</h1>
+      <p class="text-secondary mb-0">Snapshots semanais salvos. Eles nao mudam automaticamente quando os registros sao alterados.</p>
+    </div>
+    <a class="btn btn-outline-success" href="{{ url_for('main.weekly_report') }}">Gerar relatorio atual</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th>Criado em</th>
+          <th>Peso inicial/final</th>
+          <th>Variacao</th>
+          <th>Media calorica</th>
+          <th>Score</th>
+          <th>Tendencia</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+          <tr>
+            <td>{{ report.week_start }} a {{ report.week_end }}</td>
+            <td>{{ report.created_at or "-" }}</td>
+            <td>{{ report.weight_start or "-" }} / {{ report.weight_end or "-" }} kg</td>
+            <td>{{ report.weight_delta if report.weight_delta is not none else "-" }} kg</td>
+            <td>{{ report.avg_calories or 0 }} kcal</td>
+            <td>{{ report.adherence_score or 0 }}</td>
+            <td>{{ report.trend_status or "-" }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.weekly_report_saved', report_id=report.id) }}">Ver</a>
+              <form method="post" action="{{ url_for('main.delete_weekly_report_route', report_id=report.id) }}" class="d-inline" onsubmit="return confirm('Excluir este relatorio salvo?');">
+                <button class="btn btn-sm btn-outline-danger">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" class="text-center text-secondary">Nenhum relatorio salvo ainda.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

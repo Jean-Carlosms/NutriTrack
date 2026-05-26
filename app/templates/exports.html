@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Exportacoes | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1">Exportacoes</h1>
+      <p class="text-secondary mb-0">Baixe arquivos CSV locais. Trate esses arquivos com cuidado, pois podem conter dados pessoais de saude.</p>
+    </div>
+    <a class="btn btn-outline-success" href="{{ url_for('main.create_backup') }}">Criar backup local</a>
+  </div>
+
+  <form method="get" class="row g-3 mb-4 form-panel">
+    <div class="col-md-4">
+      <label class="form-label">Data inicial</label>
+      <input class="form-control" type="date" name="start_date" value="{{ start_date }}">
+      <div class="form-text">Usada em refeicoes, itens e medidas.</div>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Data final</label>
+      <input class="form-control" type="date" name="end_date" value="{{ end_date }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Semana do relatorio</label>
+      <input class="form-control" type="date" name="week_start" value="{{ week_start }}">
+    </div>
+    <div class="col-12">
+      <button class="btn btn-success">Atualizar filtros</button>
+    </div>
+  </form>
+
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-4">
+      <div class="export-card">
+        <h2 class="h5">Alimentos</h2>
+        <p>Lista completa de alimentos cadastrados.</p>
+        <a class="btn btn-success" href="{{ url_for('main.export_foods_csv') }}">Baixar CSV</a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="export-card">
+        <h2 class="h5">Refeicoes</h2>
+        <p>Refeicoes agrupadas por data e tipo.</p>
+        <a class="btn btn-success" href="{{ url_for('main.export_meals_csv', start_date=start_date, end_date=end_date) }}">Baixar CSV</a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="export-card">
+        <h2 class="h5">Itens de refeicao</h2>
+        <p>Alimentos consumidos com macros proporcionais.</p>
+        <a class="btn btn-success" href="{{ url_for('main.export_meal_items_csv', start_date=start_date, end_date=end_date) }}">Baixar CSV</a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="export-card">
+        <h2 class="h5">Medidas</h2>
+        <p>Historico de medidas corporais no periodo.</p>
+        <a class="btn btn-success" href="{{ url_for('main.export_measurements_csv', start_date=start_date, end_date=end_date) }}">Baixar CSV</a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="export-card">
+        <h2 class="h5">Relatorio semanal</h2>
+        <p>Resumo semanal com aderencia e observacao.</p>
+        <a class="btn btn-success" href="{{ url_for('main.export_weekly_report_csv', week_start=week_start) }}">Baixar CSV</a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="export-card">
+        <h2 class="h5">Historico de relatorios</h2>
+        <p>Snapshots semanais salvos no banco local.</p>
+        <a class="btn btn-success" href="{{ url_for('main.export_weekly_reports_history_csv') }}">Baixar CSV</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

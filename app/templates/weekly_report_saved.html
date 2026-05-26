@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Relatorio salvo | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1">Relatorio salvo</h1>
+      <p class="text-secondary mb-0">{{ report.week_start }} a {{ report.week_end }}. Snapshot criado em {{ report.created_at or "-" }}.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.weekly_reports_history') }}">Voltar ao historico</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="metric-card"><span>Peso inicial</span><strong>{{ report.weight_start or "-" }} kg</strong></div></div>
+    <div class="col-md-3"><div class="metric-card"><span>Peso final</span><strong>{{ report.weight_end or "-" }} kg</strong></div></div>
+    <div class="col-md-3"><div class="metric-card"><span>Variacao</span><strong>{{ report.weight_delta if report.weight_delta is not none else "-" }} kg</strong></div></div>
+    <div class="col-md-3"><div class="metric-card"><span>Score</span><strong>{{ report.adherence_score or 0 }}</strong></div></div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="metric-card compact"><span>Media calorica</span><strong>{{ report.avg_calories or 0 }} kcal</strong></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Media proteina</span><strong>{{ report.avg_protein or 0 }} g</strong></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Media carbo</span><strong>{{ report.avg_carbs or 0 }} g</strong></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Media gordura</span><strong>{{ report.avg_fat or 0 }} g</strong></div></div>
+  </div>
+
+  <section class="mb-4">
+    <h2 class="h5">Tendencia salva</h2>
+    <div class="row g-3">
+      <div class="col-md-3"><div class="metric-card compact"><span>Tendencia</span><strong>{{ report.trend_status or "-" }}</strong></div></div>
+      <div class="col-md-3"><div class="metric-card compact"><span>Variacao semanal</span><strong>{{ report.weekly_weight_delta if report.weekly_weight_delta is not none else "-" }} kg</strong></div></div>
+      <div class="col-md-3"><div class="metric-card compact"><span>Media movel</span><strong>{{ report.moving_average_latest if report.moving_average_latest is not none else "-" }} kg</strong></div></div>
+      <div class="col-md-3"><div class="metric-card compact"><span>Possivel plato</span><strong>{{ "Sim" if report.plateau_detected else "Nao" }}</strong></div></div>
+    </div>
+  </section>
+
+  <div class="alert alert-info">{{ report.recommendation or "Sem recomendacao salva." }}</div>
+
+  {% if report.notes %}
+    <section class="mb-4">
+      <h2 class="h5">Notas</h2>
+      <p>{{ report.notes }}</p>
+    </section>
+  {% endif %}
+{% endblock %}

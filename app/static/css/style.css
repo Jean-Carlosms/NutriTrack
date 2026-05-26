@@ -1,0 +1,85 @@
+:root {
+  --nt-border: #d8e6dd;
+  --nt-soft: #f4faf6;
+}
+
+body {
+  background: #fbfdfc;
+}
+
+.metric-card {
+  background: var(--nt-soft);
+  border: 1px solid var(--nt-border);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 112px;
+}
+
+.metric-card.compact {
+  min-height: 84px;
+}
+
+.metric-card span,
+.metric-card small {
+  color: #597064;
+  display: block;
+}
+
+.metric-card strong {
+  color: #173d29;
+  display: block;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  margin-top: 0.25rem;
+}
+
+.chart-panel {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--nt-border);
+  border-radius: 8px;
+  padding: 1rem;
+  height: 320px;
+}
+
+.chart-empty {
+  color: #597064;
+  margin: 0;
+  padding: 1rem;
+}
+
+.form-panel {
+  background: #ffffff;
+  border: 1px solid var(--nt-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.export-card {
+  background: #ffffff;
+  border: 1px solid var(--nt-border);
+  border-radius: 8px;
+  min-height: 180px;
+  padding: 1rem;
+}
+
+.export-card p {
+  color: #597064;
+}
+
+.meal-quantity-form {
+  min-width: 150px;
+}
+
+.login-panel {
+  background: #ffffff;
+  border: 1px solid var(--nt-border);
+  border-radius: 8px;
+  max-width: 420px;
+  padding: 1.25rem;
+}
+
+.chart-panel canvas {
+  height: 100%;
+  width: 100%;
+}

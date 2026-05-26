@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Relatorio semanal | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-3 align-items-end justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1">Relatorio semanal</h1>
+      <p class="text-secondary mb-0">{{ start.isoformat() }} a {{ end.isoformat() }}</p>
+    </div>
+    <form method="get" class="d-flex gap-2 align-items-end">
+      <div>
+        <label class="form-label mb-1">Semana</label>
+        <input class="form-control" type="date" name="week_start" value="{{ start.isoformat() }}">
+      </div>
+      <button class="btn btn-outline-success">Ver semana</button>
+    </form>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    {% if saved_report %}
+      <div class="alert alert-warning mb-0 flex-grow-1">
+        Ja existe um relatorio salvo para esta semana.
+        <a class="alert-link" href="{{ url_for('main.weekly_report_saved', report_id=saved_report.id) }}">Ver snapshot salvo</a>.
+      </div>
+      <form method="post" action="{{ url_for('main.overwrite_weekly_report_route') }}">
+        <input type="hidden" name="week_start" value="{{ start.isoformat() }}">
+        <button class="btn btn-outline-warning">Atualizar relatorio salvo</button>
+      </form>
+    {% else %}
+      <form method="post" action="{{ url_for('main.save_weekly_report_route') }}">
+        <input type="hidden" name="week_start" value="{{ start.isoformat() }}">
+        <button class="btn btn-success">Salvar relatorio da semana</button>
+      </form>
+    {% endif %}
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.weekly_reports_history') }}">Historico de relatorios</a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="metric-card"><span>Score</span><strong>{{ summary.adherence.score }}</strong><small>{{ summary.adherence.classification }}</small></div></div>
+    <div class="col-md-3"><div class="metric-card"><span>Peso inicial</span><strong>{{ summary.weight_start or "-" }} kg</strong></div></div>
+    <div class="col-md-3"><div class="metric-card"><span>Peso final</span><strong>{{ summary.weight_end or "-" }} kg</strong></div></div>
+    <div class="col-md-3"><div class="metric-card"><span>Variacao</span><strong>{{ summary.weight_delta if summary.weight_delta is not none else "-" }} kg</strong></div></div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="metric-card compact"><span>Media calorica</span><strong>{{ summary.avg_calories }} kcal</strong><small>Meta: {{ calorie_plan.target_calories }}</small></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Media proteina</span><strong>{{ summary.avg_protein_g }} g</strong><small>Meta: {{ macro_targets.protein_g }} g</small></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Media carbo</span><strong>{{ summary.avg_carbs_g }} g</strong><small>Meta: {{ macro_targets.carbs_g }} g</small></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Media gordura</span><strong>{{ summary.avg_fat_g }} g</strong><small>Meta: {{ macro_targets.fat_g }} g</small></div></div>
+    <div class="col-md-3"><div class="metric-card compact"><span>Evolucao cintura</span><strong>{{ summary.waist_delta if summary.waist_delta is not none else "-" }} cm</strong></div></div>
+  </div>
+
+  <div class="alert alert-info">{{ summary.observation }}</div>
+
+  <section class="mb-4">
+    <h2 class="h5">Analise de tendencia da semana</h2>
+    <div class="row g-3">
+      <div class="col-md-3"><div class="metric-card compact"><span>Tendencia</span><strong>{{ trend_analysis.trend.classification }}</strong></div></div>
+      <div class="col-md-3"><div class="metric-card compact"><span>Variacao semanal aprox.</span><strong>{{ trend_analysis.weekly_delta if trend_analysis.weekly_delta is not none else "-" }} kg</strong></div></div>
+      <div class="col-md-3"><div class="metric-card compact"><span>Media movel</span><strong>{{ trend_analysis.latest_moving_average if trend_analysis.latest_moving_average is not none else "-" }} kg</strong></div></div>
+      <div class="col-md-3"><div class="metric-card compact"><span>Possivel plato</span><strong>{{ "Sim" if trend_analysis.plateau.plateau_detected else "Nao" }}</strong><small>{{ trend_analysis.plateau.explanation }}</small></div></div>
+    </div>
+    <div class="alert alert-secondary mt-3 mb-0">{{ trend_analysis.recommendation }}</div>
+  </section>
+
+  <h2 class="h5">Componentes do score</h2>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <tbody>
+        <tr><th>Proximidade calorica</th><td>{{ summary.adherence.components.calories }} / 40</td></tr>
+        <tr><th>Proteina</th><td>{{ summary.adherence.components.protein }} / 30</td></tr>
+        <tr><th>Consistencia</th><td>{{ summary.adherence.components.consistency }} / 20</td></tr>
+        <tr><th>Evolucao do peso</th><td>{{ summary.adherence.components.progress }} / 10</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

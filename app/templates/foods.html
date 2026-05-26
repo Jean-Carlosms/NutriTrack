@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Alimentos | NutriTrack{% endblock %}
+
+{% block content %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0">Alimentos</h1>
+    {% if food %}<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.foods') }}">Novo cadastro</a>{% endif %}
+  </div>
+
+  <form method="post" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">Nome</label>
+      <input class="form-control" name="name" value="{{ food.name if food else '' }}" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Porcao (g)</label>
+      <input class="form-control" type="number" step="0.1" min="0.1" name="portion_grams" value="{{ food.portion_grams if food else 100 }}" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Calorias</label>
+      <input class="form-control" type="number" step="0.1" min="0" name="calories" value="{{ food.calories if food else '' }}" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Proteina (g)</label>
+      <input class="form-control" type="number" step="0.1" min="0" name="protein_g" value="{{ food.protein_g if food else '' }}" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Carbo (g)</label>
+      <input class="form-control" type="number" step="0.1" min="0" name="carbs_g" value="{{ food.carbs_g if food else '' }}" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Gordura (g)</label>
+      <input class="form-control" type="number" step="0.1" min="0" name="fat_g" value="{{ food.fat_g if food else '' }}" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Fibras (g)</label>
+      <input class="form-control" type="number" step="0.1" min="0" name="fiber_g" value="{{ food.fiber_g if food else 0 }}">
+    </div>
+    <div class="col-md-2 align-self-end">
+      <button class="btn btn-success w-100">{{ "Atualizar" if food else "Adicionar" }}</button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Alimento</th>
+          <th>Porcao</th>
+          <th>kcal</th>
+          <th>Prot.</th>
+          <th>Carbo</th>
+          <th>Gord.</th>
+          <th>Fibra</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in foods %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.portion_grams }} g</td>
+            <td>{{ item.calories }}</td>
+            <td>{{ item.protein_g }} g</td>
+            <td>{{ item.carbs_g }} g</td>
+            <td>{{ item.fat_g }} g</td>
+            <td>{{ item.fiber_g or 0 }} g</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('main.edit_food', food_id=item.id) }}">Editar</a>
+              <form method="post" action="{{ url_for('main.delete_food', food_id=item.id) }}" class="d-inline" onsubmit="return confirm('Excluir este alimento?');">
+                <button class="btn btn-sm btn-outline-danger">Excluir</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" class="text-center text-secondary">Nenhum alimento cadastrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
