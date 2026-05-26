@@ -82,3 +82,11 @@
 - Busca por termos como `secret`, `token`, `senha`, `hash`, `.db` e caminhos locais ajuda a encontrar riscos antes do primeiro commit.
 - Release notes e checklist reduzem chance de publicar arquivos sensiveis por pressa.
 - Um resumo de portfolio ajuda a explicar decisoes tecnicas, limites do MVP e proximos passos com clareza.
+
+## Fase 11
+
+- Screenshots ajudam o GitHub a comunicar valor antes mesmo de alguem rodar o projeto.
+- Um guia de captura evita imagens inconsistentes e reduz risco de expor dados pessoais.
+- Referenciar caminhos previstos no README prepara a vitrine sem criar imagens falsas.
+- Capturas devem usar dados ficticios e evitar barra do navegador quando ela revelar usuario, caminho local ou informacao sensivel.
+- A tela de dashboard e o relatorio semanal sao as melhores vitrines porque mostram dados, graficos e recomendacoes em uma unica narrativa visual.

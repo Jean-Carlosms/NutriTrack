@@ -10,6 +10,28 @@ O projeto foi criado como um MVP simples e evolutivo, com regras de negocio em `
 
 O NutriTrack foi preparado para uso local e versionamento no GitHub. O banco SQLite, backups, `.env`, caches e dados pessoais ficam fora do versionamento; codigo, testes, migracoes e assets offline devem ser versionados.
 
+## Screenshots
+
+As imagens abaixo sao os caminhos previstos para a apresentacao visual no GitHub. O guia de captura esta em `docs/SCREENSHOTS_GUIDE.md`.
+
+![Dashboard](docs/images/dashboard.png)
+
+![Perfil](docs/images/profile.png)
+
+![Alimentos](docs/images/foods.png)
+
+![Refeicoes](docs/images/meals.png)
+
+![Medidas corporais](docs/images/measurements.png)
+
+![Relatorio semanal](docs/images/weekly-report.png)
+
+![Historico de relatorios](docs/images/weekly-reports-history.png)
+
+![Exportacoes](docs/images/exports.png)
+
+![Login opcional](docs/images/login.png)
+
 ## Objetivo
 
 Oferecer uma base local para registrar perfil, alimentos, refeicoes e medidas corporais, acompanhando metas caloricas, macros, progresso fisico e aderencia semanal.
@@ -336,6 +358,9 @@ Resultado atual validado:
 |-- RELEASE_NOTES.md
 |-- GITHUB_PUBLISH_CHECKLIST.md
 |-- PORTFOLIO_SUMMARY.md
+|-- docs/
+|   |-- SCREENSHOTS_GUIDE.md
+|   `-- images/
 |-- migrations/
 |-- scripts/
 |-- app/

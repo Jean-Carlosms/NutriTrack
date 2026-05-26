@@ -51,6 +51,20 @@ NutriTrack organiza registros nutricionais e corporais em um ambiente local, sim
 - Sistema simples de migracoes com `schema_migrations`.
 - Relatorios persistidos como snapshots historicos.
 
+## Visual presentation
+
+As telas que melhor demonstram o projeto sao:
+
+- Dashboard: mostra o valor do produto rapidamente, com cards, graficos e analise de tendencia.
+- Relatorio semanal: evidencia a combinacao entre dados nutricionais, score de aderencia e recomendacao educativa.
+- Historico de relatorios: demonstra persistencia de snapshots e rastreabilidade da evolucao semanal.
+- Alimentos e refeicoes: mostram o fluxo operacional do MVP e os calculos proporcionais de macros.
+- Medidas corporais: mostra a base dos graficos, tendencia de peso e estimativas corporais.
+- Exportacoes: destaca preocupacao com portabilidade dos dados e backup local.
+- Login opcional: mostra o cuidado com protecao basica de dados pessoais em uso local.
+
+As capturas planejadas ficam em `docs/images/`, seguindo o guia `docs/SCREENSHOTS_GUIDE.md`.
+
 ## Arquitetura
 
 - `app/routes.py`: camada web Flask.

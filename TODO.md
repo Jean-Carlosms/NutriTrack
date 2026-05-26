@@ -94,7 +94,15 @@
 - README atualizado para apresentacao no GitHub.
 - Comandos Git sugeridos documentados, sem execucao automatica.
 
-## Fase 11: deploy opcional
+## Fase 11: documentacao visual para GitHub concluida
+
+- Pasta `docs/images/` criada para screenshots.
+- Guia `docs/SCREENSHOTS_GUIDE.md` criado.
+- README atualizado com secao "Screenshots".
+- `PORTFOLIO_SUMMARY.md` atualizado com secao de apresentacao visual.
+- `RELATORIO_FASE_11.md` criado.
+
+## Fase 12: deploy opcional
 
 - Configurar variaveis de ambiente.
 - Adicionar suporte a banco externo.
@@ -102,18 +110,18 @@
 - Criar pipeline de testes.
 - Configurar logs adequados.
 
-## Fase 12: exportacao Excel opcional
-
-- Avaliar necessidade real de `.xlsx`.
-- Evitar Pandas/openpyxl enquanto CSV atender bem.
-
 ## Fase 13: comparacao visual entre relatorios salvos
 
 - Comparar snapshots semanais lado a lado.
 - Criar graficos de evolucao entre relatorios persistidos.
 - Exportar comparativo em CSV.
 
-## Fase 14: multiplos usuarios opcional
+## Fase 14: exportacao Excel opcional
+
+- Avaliar necessidade real de `.xlsx`.
+- Evitar Pandas/openpyxl enquanto CSV atender bem.
+
+## Fase 15: multiplos usuarios opcional
 
 - Avaliar se o MVP ainda deve permanecer single-user.
 - Projetar isolamento de dados por usuario.
